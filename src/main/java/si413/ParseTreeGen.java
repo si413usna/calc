@@ -63,6 +63,19 @@ public class ParseTreeGen {
         return tokenizer.streamFrom(sourceFile);
     }
 
+    public void checkTokens(TokenStream source) throws IOException {
+        source.seek(0);
+        int mark = source.mark();
+        while (true) {
+            Token tok = source.LT(1);
+            if (tok.getType() == -1) break;
+            source.consume();
+        }
+        source.seek(0);
+        source.release(mark);
+        System.out.println("successful tokenization");
+    }
+
     public void showTokens(TokenStream source) throws IOException {
         source.seek(0);
         int mark = source.mark();
@@ -108,6 +121,23 @@ public class ParseTreeGen {
         }
     }
 
+    public void checkParseTree(TokenStream source) throws IOException, ReflectiveOperationException {
+        source.seek(0);
+        int mark = source.mark();
+        Parser parser = (Parser) parserClass.getConstructor(TokenStream.class).newInstance(source);
+        Errors.register(parser);
+        String startRuleName = parser.getRuleNames()[0];
+        ParseTree root = null;
+        try {
+            Method startRuleMethod = parser.getClass().getMethod(startRuleName);
+            root = (ParseTree)startRuleMethod.invoke(parser);
+        }
+        catch (Exception e) { throw new RuntimeException(e); }
+        source.seek(0);
+        source.release(mark);
+        System.out.println("successful parse");
+    }
+
     public void showParseTree(TokenStream source) throws IOException, ReflectiveOperationException {
         source.seek(0);
         int mark = source.mark();
@@ -130,20 +160,31 @@ public class ParseTreeGen {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Arguments: <tokenSpec.txt> [<Grammar.g4>] <sourcecode.txt>");
+            System.err.println("Arguments: [-q] <tokenSpec.txt> [<Grammar.g4>] <sourcecode.txt>");
             System.exit(1);
         }
 
-        File specFile = new File(args[0]);
+        int argind = 0;
+
+        boolean quiet = false;
+        if (args[argind].equals("-q")) {
+            quiet = true;
+            ++argind;
+        }
+
+        File specFile = new File(args[argind]);
+        ++argind;
+
         File grammarFile;
         File inputFile;
-        if (args.length == 2) {
+
+        if (args.length == argind + 1) {
             grammarFile = null;
-            inputFile = new File(args[1]);
+            inputFile = new File(args[argind]);
         }
         else {
-            grammarFile = new File(args[1]);
-            inputFile = new File(args[2]);
+            grammarFile = new File(args[argind]);
+            inputFile = new File(args[argind+1]);
         }
 
         Path tempDir = Files.createTempDirectory("antlr_build_");
@@ -208,8 +249,12 @@ public class ParseTreeGen {
         }
 
         TokenStream toks = ptgen.getStream(inputFile.toPath());
-        ptgen.showTokens(toks);
-        if (grammarFile != null) ptgen.showParseTree(toks);
-        System.out.println("================================");
+        if (quiet) ptgen.checkTokens(toks);
+        else ptgen.showTokens(toks);
+        if (grammarFile != null) {
+            if (quiet) ptgen.checkParseTree(toks);
+            else ptgen.showParseTree(toks);
+        }
+        if (!quiet) System.out.println("================================");
     }
 }
