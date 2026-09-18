@@ -22,7 +22,7 @@ You will need JDK 21 or later installed.
 
 To run the ptree, tool, do:
 
-    java -jar ptree.jar <tokenSpec.txt> [<Grammar.g4>] <sourcecode.txt>
+    java -jar ptree.jar [-q] <tokenSpec.txt> [<Grammar.g4>] <sourcecode.txt>
 
 If the grammar file is omitted, then just the tokenization is shown.
 
