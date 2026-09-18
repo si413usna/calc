@@ -1,0 +1,9 @@
+STRLIT: "([^"]|"")*"
+COMMA:  ,
+REV:    <
+LP:     \(
+RP:     \)
+GOGO:   gogo
+ASK:    ask
+ignore: nono .*
+ignore: \s

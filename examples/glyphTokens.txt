@@ -1,0 +1,5 @@
+BIND:   BB
+SHOW:   S
+NUM:    [IVXL]
+GLYPH:  [A-Z][a-z]*
+ignore: \s
