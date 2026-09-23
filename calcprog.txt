@@ -1,0 +1,10 @@
+# a small example program in the calc language
+
+print 1 + 2 * 3  # note, precedence should make this 7, not 9
+
+save 3*-33
+print x - 2 + x  # should be -200
+
+save 1
+print x - 2 + x   # should be 0
+print x - (2 + x) # should be -2

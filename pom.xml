@@ -5,12 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>si413</groupId>
-  <artifactId>ptree</artifactId>
+  <artifactId>calc</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
 
   <name>ptree</name>
-  <description>Tokenizer and Parser for SI413 using ANTLR.</description>
+  <description>Simple calculator language implementation.</description>
   <url>http://roche.work/si413</url>
 
   <properties>
@@ -90,7 +90,7 @@
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
-                    <Main-Class>si413.ParseTreeGen</Main-Class>
+                    <Main-Class>si413.Main</Main-Class>
                   </manifestEntries>
                 </transformer>
               </transformers>

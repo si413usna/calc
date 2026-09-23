@@ -1,48 +1,72 @@
-# ptree: Scanner and Parser Visualization
+# calc: Interpreter for simple calculator language
 
-This program will create a Scanner (Tokenizer) and Parser based on
-given token spec and grammar files.
+## Prerequisites
 
-## Getting the jar
+You will a JDK (Java version 21 or later), and need Apache Maven.
+Try `javac -version` and `mvn --version` to check what you have.
 
-Easiest: Download the released pre-built
-[ptree.jar](https://github.com/si413usna/ptree/releases/latest/download/ptree.jar)
-file.
+To install on Debian/Ubuntu you can do
 
-Or: install Apache Maven and run
+    sudo apt install default-jdk maven
 
-    mvn package
 
-which will create a jar file in `target/ptree-VERSION.jar`.
+## Easy way to compile and run
 
-## Usage
+Just run
 
-You will need JDK 21 or later installed.
-(Check by running `javac -version`.)
+    ./run.sh
 
-To run the ptree, tool, do:
+This runs `mvn compile`, then grabs the correct classpath from maven,
+then runs the main method from `Main.java` with that classpath.
 
-    java -jar ptree.jar [-q] <tokenSpec.txt> [<Grammar.g4>] <sourcecode.txt>
+For example, to run the test program, you would do
 
-If the grammar file is omitted, then just the tokenization is shown.
+    ./run.sh calcprog.txt
 
-## Token spec and grammar files
+If you just want to see the token stream or parse tree, put the word
+`token` or `parse` as an extra command-line argument before the source
+file name, like
 
-The scanner is built in Java based on Java regex syntax. The spec
-is formatted like this:
+    ./run.sh parse calcprog.txt
 
-    TOKNAME: regex
-    ANOTHER: regex
-    ignore: regex
 
-where the all-caps `TOKNAME`s are token names, the `regex` are Java
-regular expressions, and the special name `ignore` means occurrences of
-that regex will be skipped by the tokenizer and omitted from the token
-stream.
+## Manual build and run
 
-The parser spec is in the format of [ANTLR v4](https://github.com/antlr/antlr4/blob/4.6/doc/index.md),
-and ANTLR is used to generate the parser on the fly.
+To compile everything from scratch, do
 
-The [examples folder](examples/) contains some sample scanner specs,
-grammars, and small programs in a couple of languages so you can see how
-these files are formatted.
+    mvn clean package
+
+which creates a runnable jar file under `target/calc-1.0.jar`
+
+Then you can run that jar directly, like
+
+    java -jar target/calc-1.0.jar calcprog.txt
+
+
+## Code layout
+
+*   Token specifications (regexes):
+    [src/main/resources/si413/tokenSpec.txt](src/main/resources/si413/tokenSpec.txt)
+
+*   Grammar spec (for ANTLR):
+    [src/main/antlr4/si413/Grammar.g4](src/main/antlr4/si413/Grammar.g4)
+
+*   Actual code in [src/main/java/si413](src/main/java/si413):
+
+    *   [Interpreter.java](src/main/java/si413/Interpreter.java):
+        Contains "visitor" classes to execute each node in the parse
+        tree. **This is where the main logic (semantics) happens!**
+
+    *   [Main.java](src/main/java/si413/Main.java):
+        Processes command-line args, then calls the Tokenizer, the
+        ANTLR-generated parser, and finally the `Interpreter`.
+
+    *   [Tokenizer.java](src/main/java/si413/Tokenizer.java):
+        Scans a source file and outputs a token stream according to the
+        `tokenSpec.txt`, using the maximal munch rule.
+
+    *   [Errors.java](src/main/java/si413/Errors.java):
+        Convenience class for returning exceptions and raising runtime errors.
+
+    *   [SyntaxViz.java](src/main/java/si413/SyntaxViz.java):
+        Methods to display a token stream or parse tree.
