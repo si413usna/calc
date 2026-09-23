@@ -9,7 +9,7 @@
   <version>1.0</version>
   <packaging>jar</packaging>
 
-  <name>ptree</name>
+  <name>calc</name>
   <description>Simple calculator language implementation.</description>
   <url>http://roche.work/si413</url>
 
