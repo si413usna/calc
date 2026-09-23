@@ -7,6 +7,5 @@ RP: \)
 ADDOP: [-+]
 MULOP: [*/]
 INT: [0-9]+
-NEWLINE: \n
 ignore: #.*
-ignore: [ \t]
+ignore: [ \t\n]

@@ -1,7 +1,7 @@
 parser grammar Grammar;
 // grammar for basic calculator language
 
-tokens {PRINT, SAVE, X, LP, RP, ADDOP, MULOP, INT, NEWLINE}
+tokens {PRINT, SAVE, X, LP, RP, ADDOP, MULOP, INT}
 
 prog
   : stmt prog  #RegularProg
@@ -9,9 +9,8 @@ prog
   ;
 
 stmt
-  : PRINT expr NEWLINE  #PrintStmt
-  | SAVE expr NEWLINE   #SaveStmt
-  | NEWLINE             #EmptyStmt
+  : PRINT LP expr RP  #PrintStmt
+  | SAVE LP expr RP   #SaveStmt
   ;
 
 expr
@@ -20,5 +19,4 @@ expr
   | ADDOP expr       #SignExpr
   | expr MULOP expr  #MulExpr
   | expr ADDOP expr  #AddExpr
-  | LP expr RP       #ParenExpr
   ;

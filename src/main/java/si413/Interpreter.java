@@ -46,11 +46,6 @@ public class Interpreter {
             savedValue = exprVis.visit(ctx.expr());
             return null;
         }
-
-        @Override
-        public Void visitEmptyStmt(Grammar.EmptyStmtContext ctx) {
-            return null;
-        }
     }
 
     /** Methods in this class will execute expressions and return the result.
@@ -92,11 +87,6 @@ public class Interpreter {
             int rhs = visit(ctx.expr(1));
             if (ctx.ADDOP().getText().equals("+")) return lhs + rhs;
             else return lhs - rhs;
-        }
-
-        @Override
-        public Integer visitParenExpr(Grammar.ParenExprContext ctx) {
-            return visit(ctx.expr());
         }
     }
 
